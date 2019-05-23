@@ -5,6 +5,16 @@ object PointsApp extends App {
 
   class LabeledPoint(val label: String, x: Double, y: Double) extends Point(x, y)
 
+  class PackedPoint(private val packed: Long) extends AnyVal {
+    def x = (packed >> 32).toInt
+    def y = packed.toInt
+    override def toString = s"Pnt[packed=$packed,x=$x,y=$y]"
+  }
+
+  object PackedPoint {
+    def apply(x: Int, y: Int) = new Pnt((x.toLong << 32) | y)
+  }
+
   abstract class Shape {
     def centerPoint: Point
   }
