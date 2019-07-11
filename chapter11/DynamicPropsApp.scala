@@ -22,8 +22,8 @@ object DynamicPropsApp extends App {
 
   val sysProps = new DynamicProps(System.getProperties)
   System.getProperties.keySet()
-  sysProps.java.home
-  sysProps.java.runtime.name
+  println(sysProps.java.home)
+  println(sysProps.java.runtime.name)
   sysProps.foo.bar.quux = "foo! bar! quux!"
-  sysProps.foo.bar.quux
+  println(sysProps.foo.bar.quux)
 }
