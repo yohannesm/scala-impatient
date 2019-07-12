@@ -1,5 +1,6 @@
 import scala.math._
 
+//HOF stands for Higher Order Functions 
 object HOFApp extends App {
   //#1
   def values(fun: (Int) => Int, low: Int, high: Int): Seq[ (Int, Int) ]= {
