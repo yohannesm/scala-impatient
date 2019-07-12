@@ -40,4 +40,23 @@ object HOFApp extends App {
 
   println("test suite #5")
   println(largest(x => 10 * x - x * x, 1 to 10))
+
+  //#6
+  def largestAt(fun: (Int) => Int, inputs: Seq[Int]) = inputs.
+    map( x => (x, fun(x))). //_.1 is x _.2 is f(x)
+    reduce( (x, y) => if (x._2 > y._2) x else y)._1
+
+  println("test suite #6")
+  println(largestAt(x => 10 * x - x * x, 1 to 10))
+
+  //#7
+  def adjustToPair(fun: (Int, Int) => Int): ((Int, Int)) => Int = 
+    (pair: (Int, Int)) => fun(pair._1, pair._2)
+
+  println("test suite #7")
+  println(adjustToPair(_ * _)( (6, 7) ))
+  val pairs = (1 to 10) zip (11 to 20)
+  println( pairs.map(adjustToPair(_ + _)) )
+  //this also works
+  println( pairs.map{ case (x, y) => x + y }.sum )
 }
