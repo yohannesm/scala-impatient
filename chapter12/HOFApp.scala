@@ -20,7 +20,7 @@ object HOFApp extends App {
   def factoFunc(n: Int): Int = signum(n) match {
     case 0 => 1
     case 1 => (1 to n).reduceLeftOption(_ * _).getOrElse(1)
-    case -1 => - (( 1 to -n).reduceLeftOption(_ * _).getOrElse(-1))
+    case -1 => (( -1 to n by -1).reduceLeftOption(_ * _).getOrElse(-1000000))
   }
   println("test suite #3")
   println(factoFunc(1))
