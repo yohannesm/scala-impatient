@@ -60,4 +60,24 @@ object HOFApp extends App {
   println( pairs.map(adjustToPair(_ + _)) )
   //this also works
   println( pairs.map{ case (x, y) => x + y }.sum )
+
+  //#8
+  println("test suite #8")
+  val strs = Array("Hi", "Bar", "Quux", "Hello", "World!")
+  val strlengths = Array(2, 3, 4, 5, 6)
+  println( strs.corresponds(strlengths)( (str, len) => str.length == len))
+
+  //#9
+  println("test suite #9")
+  def corresHomebrew[A, B](a: Seq[A], b: Seq[B], fun: (A, B) => Boolean) = 
+    a.zip(b).forall(p => fun(p._1, p._2))
+  println( corresHomebrew(strs, strlengths, (str:String, len: Int) => str.length == len))
+
+  //#10
+  println("test suite #10")
+  def unless(cond: Boolean)(block: => Unit): Unit = {
+    if(!cond) block
+  }
+
+  unless(1 == 2) { println("what in the world?")}
 }
