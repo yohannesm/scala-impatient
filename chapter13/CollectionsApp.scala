@@ -1,0 +1,5 @@
+
+
+object CollectionsApp extends App {
+
+}
