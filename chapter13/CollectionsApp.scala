@@ -31,4 +31,32 @@ object CollectionsApp extends App {
 
   println("#3 test case")
   println( indexMapToSetFold(strMiss))
+
+  /* Other approaches
+   *
+   */
+    // other approach
+    def merge[K,V,X](map: Map[K,V], entry: (K,X))(fun: (V, X) => V) = entry match {
+      case (k, v) => map + (k -> fun(map(k), v))
+    }
+    def indexes2c(s: String): Map[Char,List[Int]] = {
+      val initial = HashMap[Char,List[Int]]().withDefaultValue(Nil)
+      s.zipWithIndex.foldLeft(initial)(merge(_, _)((lst, i) => i :: lst))
+    }
+    indexes2c("Mississippi")
+
+    // other approach for merge
+    def merge2[K,V](map: Map[K,V], entry: (K,V))(fun: (V, V) => V) = entry match {
+      case (k, v) => map + (if (map.contains(k)) (k -> fun(map(k), v))else (k -> v))
+    }
+    def indexes2d(s: String): Map[Char,List[Int]] = {
+      val initial = Map[Char,List[Int]]()
+      s.zipWithIndex.foldLeft(initial)((map, pair) =>
+        merge2(map, (pair._1 -> List(pair._2)))(_ ::: _))
+    }
+    indexes2d("Mississippi")
+
+  /*********************
+   * end other approaches
+   */
 }
