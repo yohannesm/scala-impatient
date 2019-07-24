@@ -35,7 +35,6 @@ object CollectionsApp extends App {
   /* Other approaches
    *
    */
-    // other approach
     def merge[K,V,X](map: Map[K,V], entry: (K,X))(fun: (V, X) => V) = entry match {
       case (k, v) => map + (k -> fun(map(k), v))
     }
@@ -59,4 +58,22 @@ object CollectionsApp extends App {
   /*********************
    * end other approaches
    */
+
+  println("#4 test case")
+  def filterZeroes(l: List[Int]): List[Int] = {
+    l.filterNot(_ == 0)
+  }
+
+
+  def correspondMap(strs: Array[String], map: Map[String, Int]) = 
+    strs.flatMap(map.get(_))
+
+  def printArr[A](arr: Array[A]) = arr.map(_.toString).mkString(" ")
+
+  val strs = Array("Tom", "Fred", "Harry")
+  val map = Map("Tom" -> 3, "Dick" -> 4, "Harry" -> 5)
+  println("#5 test case")
+  val res5 =  correspondMap(strs, map) 
+  val print5 = printArr(res5)
+  println( s"Array( $print5  )" )
 }
