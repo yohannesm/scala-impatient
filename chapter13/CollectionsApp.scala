@@ -72,8 +72,42 @@ object CollectionsApp extends App {
 
   val strs = Array("Tom", "Fred", "Harry")
   val map = Map("Tom" -> 3, "Dick" -> 4, "Harry" -> 5)
-  println("#5 test case")
   val res5 =  correspondMap(strs, map) 
   val print5 = printArr(res5)
   println( s"Array( $print5  )" )
+
+  // 5
+  // using only reduceLeft, but only supporting strings:
+  def mkStringImitator(strs: Seq[String], between: String = ", "): String =
+    strs.reduceLeft((a, b) => a + between + b)
+
+  mkStringImitator(List("Foo", "Bar", "Quux"), " | ")
+
+  // generic but using map in addition to reduceLeft:
+  def mkStringImitator2[T](strs: Seq[T], between: String = ", "): String =
+    strs.map(_.toString).reduceLeft((a, b) => a + between + b)
+
+  println("#5 test case")
+  println( mkStringImitator2(List("Foo", "Bar", "Quux"), " | ") )
+
+  // 6
+  val lst = (1 to 16).toList
+  // 1st: fold right lst, starting with an empty list,
+  // combining successive elements by prepending them to the accumulating list,
+  // so effectively recreating the list
+  println("#6 test case")
+  (lst :\ List[Int]())(_ :: _) // => faster
+  // 2nd: same but using fold left and appending (so less efficient I think)
+  (List[Int]() /: lst)(_ :+ _)
+  // reverse soln:
+  (lst :\ List[Int]())((a, b) => b :+ a)
+  (List[Int]() /: lst)((a, b) => b :: a) // => faster
+
+  // 7
+  val prices = List(5.0, 20.0, 9.95)
+  val quants = List(10, 2, 1)
+  println("#7 test case")
+  println( (prices zip quants).map(((a: Double, b: Int) => a * b).tupled) )
+  println( (prices zip quants).map(((_: Double) * (_: Int)).tupled) ) // a bit shorter
+
 }
