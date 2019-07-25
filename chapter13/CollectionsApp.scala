@@ -110,4 +110,36 @@ object CollectionsApp extends App {
   println( (prices zip quants).map(((a: Double, b: Int) => a * b).tupled) )
   println( (prices zip quants).map(((_: Double) * (_: Int)).tupled) ) // a bit shorter
 
+  def groupedFunc(a: Seq[Double], cols: Int) = a.grouped(cols).toList
+
+  println("#8 test case")
+  println( groupedFunc(List(1, 2, 3, 4, 5, 6, 7), 3))
+
+  //continents that have the most timezone
+  val ids = java.util.TimeZone.getAvailableIDs.toSeq
+  def getContinent(id: String) = id.split('/').head
+  println("#10 test case")
+  println( ids.groupBy(getContinent).reduce((a, b) => if (a._2.length > b._2.length) a else b)._1 )
+
+  //DON'T DO => bad Code, because it mutates shared data between threads
+  //val frequencies = new scala.collection.mutable.HashMap[Char, Int]
+  //for( c <- str.par) frequencies(c) = frequencies.getOrElse(c, 0) + 1
+
+  //instead use an aggregate => str.par.aggregate(...
+
+  /*
+  def mergeAll[K,V](a: Map[K,V], b: Map[K,V])(fun: (V, V) => V): Map[K,V] = {
+      def mergeEntry(entry: (K, V)) = entry match {
+            case (k, v) => (k, if (a.contains(k)) fun(a(k), v) else v)
+              }
+        b.map(mergeEntry)
+  }
+
+  val fn3 = """./longwords.txt"""
+  val str = Source.fromFile(fn3).mkString
+  val initial = Map[Char, Int]()
+  str.par.aggregate(initial)((map, ch) => merge2(map, (ch -> 1))(_ + _),
+      (a, b) => mergeAll(a, b)(_ + _)) 
+    */
+
 }
