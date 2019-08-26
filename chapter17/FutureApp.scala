@@ -8,9 +8,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.io.StdIn
 import scala.xml.Node
 import scala.xml.parsing.XhtmlParser
+import scala.util._
 
 
 object FutureApp extends App {
+  def completeFuture[T](f: Future[T]) = f.onComplete{
+    case Success(v) => v
+    case Failure(f) => println(f)
+  }
+
   def await[T](f: Future[T]) = Await.result(f, 10.seconds)
 
   def future(n: Int) = Future{ Thread.sleep(1000); n}
@@ -32,8 +38,13 @@ object FutureApp extends App {
  def doAllInOrder[T](fs: (T => Future[T])*): T => Future[T] = 
    fs.reduceLeft( (a, b) => x => a(x).flatMap(b))
 
+ def doAllInOrderWithSeq[T](fs: Seq[(T => Future[T])]): T => Future[T] = 
+   fs.reduceLeft( (a, b) => x => a(x).flatMap(b))
+
+
  def h(n: Int) =  Future{ n - 1}
  await(doAllInOrder(f, g, h)(10))
+ //await(doAllInOrderWithSeq(List(f(_), g(_), h(_)))(10))
 
  def doTogether[T, U, V](f: T => Future[U], g: T => Future[V]): T => Future[(U, V)] = {
   x => {
@@ -42,5 +53,21 @@ object FutureApp extends App {
   }
  }
 
- def futureSequence[T](futures: Seq[Future[T]]): Future[Seq[T]] = ???
+ def futureSequence[T](futures: Seq[Future[T]]): Future[Seq[T]] = {
+   val initialVal = Future{ List[T]() }
+   futures.foldRight(initialVal)( (future, acc) => acc.flatMap(r2 => future.map(r1 => r1 :: r2)))
+ }
+
+ def repeat[T](action: => T, until: T => Boolean): Future[T] = {
+   def doRepeat(action: => T, until: T=> Boolean): T = {
+     val r = action
+     if (until(r)) r else doRepeat(action, until)
+   }
+
+   val p = Promise[T]
+   Future{ p.success(doRepeat(action, until)) }
+   p.future
+ }
+
+ await( repeat( StdIn.readLine("Enter secret password: "), (pwd: String) => pwd == "secret" ) )
 }
