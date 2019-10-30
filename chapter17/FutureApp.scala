@@ -24,14 +24,19 @@ object FutureApp extends App {
  val life =  await( for (n1 <- future(2); n2 <- future(40))
    yield(n1 + n2))
 
+ //equivalent to 
+ //future(2).flatMap(n1 => future(40).map(n2 => println(n1 + n2)))
+ //println is executed by the 2nd/last future thread
+
  println(life)
 
+ //2 
  def doInOrder[T, U, V](f: T => Future[U], g: U => Future[V]): T => Future[V] = {
   x => f(x).flatMap(g)
  }
 
- def f(n: Int) = Future{ n + 1 }
- def g(n: Int) = Future{ n * 2 }
+ def f(n: Int) = Future{ println("f executes"); n + 1 }
+ def g(n: Int) = Future{ println("g executes"); n * 2 }
 
  println( await(doInOrder(f, g)(10)) )
 
@@ -42,7 +47,7 @@ object FutureApp extends App {
    fs.reduceLeft( (a, b) => x => a(x).flatMap(b))
 
 
- def h(n: Int) =  Future{ n - 1}
+ def h(n: Int) =  Future{println("h executes";  n - 1}
  await(doAllInOrder(f, g, h)(10))
  //await(doAllInOrderWithSeq(List(f(_), g(_), h(_)))(10))
 
@@ -69,5 +74,6 @@ object FutureApp extends App {
    p.future
  }
 
- await( repeat( StdIn.readLine("Enter secret password: "), (pwd: String) => pwd == "secret" ) )
+ //6
+ //await( repeat( StdIn.readLine("Enter secret password: "), (pwd: String) => pwd == "secret" ) )
 }
